@@ -7,6 +7,7 @@
 #import <objc/message.h>
 
 #import "FLTFirebaseMessagingPlugin.h"
+#import <ZDCChat/ZDCChat.h>
 
 NSString *const kFLTFirebaseMessagingChannelName = @"plugins.flutter.io/firebase_messaging";
 
@@ -376,6 +377,7 @@ NSString *const kMessagingPresentationOptionsUserDefaults =
 #ifdef DEBUG
   [[FIRMessaging messaging] setAPNSToken:deviceToken type:FIRMessagingAPNSTokenTypeSandbox];
 #else
+  [ZDKChat registerPushToken:deviceToken];
   [[FIRMessaging messaging] setAPNSToken:deviceToken type:FIRMessagingAPNSTokenTypeProd];
 #endif
 }
@@ -405,6 +407,8 @@ NSString *const kMessagingPresentationOptionsUserDefaults =
     } else {
       [_channel invokeMethod:@"Messaging#onBackgroundMessage" arguments:notificationDict];
     }
+    UIApplication *application = [UIApplication sharedApplication];
+    [ZDKChat didReceiveRemoteNotification:userInfo in:application];
   }
 }
 #endif
